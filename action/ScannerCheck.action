@@ -1,0 +1,8 @@
+# Goal
+# <empty>
+---
+# Result
+bool success
+---
+# Feedback
+uint16 value# 1st wrong index of scanner
