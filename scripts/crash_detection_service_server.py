@@ -3,7 +3,7 @@
 import rospy
 
 from std_srvs.srv import Trigger, TriggerResponse
-from turtlebot_maze_escape.srv import AlignmentTarget, AlignmentTargetRequest
+from turtlebot_maze_solver.srv import AlignmentTarget, AlignmentTargetRequest
 from utility import get_degrees, Services
 
 from laser_sub import LaserTopicSub

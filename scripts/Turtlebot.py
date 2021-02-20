@@ -10,18 +10,22 @@ from cmd_vel_pub import CmdVelPub
 from odom_sub import OdomTopicSub
 from laser_sub import LaserTopicSub
 
-from turtlebot_maze_escape.msg import ScannerCheckAction, ScannerCheckGoal
-from turtlebot_maze_escape.srv import AlignmentTarget, AlignmentTargetRequest
+from turtlebot_maze_solver.msg import ScannerCheckAction, ScannerCheckGoal
+from turtlebot_maze_solver.srv import AlignmentTarget, AlignmentTargetRequest
 from std_srvs.srv import Trigger, TriggerRequest
 
 class Turtlebot(object):
 
-    def __init__(self, node_size = 1.55):
-
+    def __init__(self, node_size = 1.45):
+        rate = rospy.Rate(5)
         self._cmd_pub = CmdVelPub()
+        rate.sleep()
         self._odom_reader = OdomTopicSub()
+        rate.sleep()
         self._laser_reader = LaserTopicSub()
-        time.sleep(2)
+        while len(self.get_laser_scan()) != 720:
+            rate.sleep()
+        rate.sleep()
         
         self.previous_node = None
         self.current_node = Node()
@@ -69,6 +73,9 @@ class Turtlebot(object):
     def send_goal_to_scanner_check_action_server(self):
         self._scanner_check_action_client.send_goal(self._scanner_check_goal, feedback_cb=self.scanner_check_feedback_callback)
     
+    def cancel_scanner_check_action(self):
+        self._scanner_check_action_client.cancel_goal()
+
     def scanner_check_in_progress(self):
         in_progress = (self._scanner_check_action_client.get_state() < 2)
         return in_progress
@@ -119,7 +126,30 @@ class Turtlebot(object):
         if value != 0:
             rospy.loginfo("Robot Requesting Realignment")
             self.make_realignment_request(self.orientation_directed)
-        
+    
+    def approching_wall(self):
+        if self.get_laser_scan()[360] < (self.node_size / 2):
+            return True
+        else:
+            return False
+
+    def left_open(self):
+        if self.get_laser_scan()[719] > self.node_size:
+            return True
+        else:
+            return False
+
+    def forward_open(self):
+        if self.get_laser_scan()[360] > self.node_size:
+            return True
+        else:
+            return False
+
+    def right_open(self):
+        if self.get_laser_scan()[0] > self.node_size:
+            return True
+        else:
+            return False
 
 if __name__ == "__main__":
     rospy.init_node('turtlebot_node')

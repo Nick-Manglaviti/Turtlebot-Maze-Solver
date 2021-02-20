@@ -2,6 +2,7 @@
 import rospy
 from Node import Node
 from utility import State, Intersection, Directions, reorient, generate_corners, is_inf
+from graph_util import update_nodes, set_destination_to_path, update_connections, set_destination_to_unvisited_child
 import math
 
 class BehaviorInIntersection(object):
@@ -11,24 +12,26 @@ class BehaviorInIntersection(object):
 
     def process(self, robot):
         rospy.logwarn("In Intersection")
-        self.update_nodes(robot)
+        update_nodes(robot)
         if robot.is_on_path():
-            rospy.logwarn("Continuing Path...")
-            self.set_destination_to_path(robot)
+            set_destination_to_path(robot)
         else:
             if not robot.current_node.is_visited:
                 robot.current_node = self.lookup_node(robot.get_coordinates(), robot.graph)
                 if not robot.current_node.is_visited:
-                    rospy.logwarn("Creating Node...")
                     self.create_node(robot)
-                self.update_connections(robot)
-                self.set_destination_to_unvisited_child(robot)
+                update_connections(robot)
+                set_destination_to_unvisited_child(robot)
             if robot.destination_node == None:
                 robot.path = robot.graph.search_for_unvisited(robot.current_node)
-                self.update_connections(robot)
-                self.set_destination_to_path(robot)
-        rospy.logwarn("Intersection processing done.")
+                if (len(robot.path) == 0):
+                    rospy.logerr("No Valid Nodes could be found.")
+                    robot.cancel_scanner_check_action()
+                else:
+                    update_connections(robot)
+                    set_destination_to_path(robot)
         robot.graph.display()
+        rospy.logwarn("Intersection processing done.")
         robot.state = State.GOING_TO_HALLWAY
     
     """
@@ -36,41 +39,11 @@ class BehaviorInIntersection(object):
     Return the found node or a placeholder node.
     """
     def lookup_node(self, coordinates, graph):
-        rospy.logwarn("Performing Lookup with x=" + str(coordinates[0]) + " y=" + str(coordinates[1]))
+        rospy.logwarn("Performing Lookup with x: " + str(coordinates[0]) + " y: " + str(coordinates[1]))
         searched_node = graph.search_by_position(coordinates[0], coordinates[1])
         if searched_node == None:
             searched_node = Node()
         return searched_node
-    
-    """
-    Pop from the robot's path
-    and set it to destination
-    """
-    def set_destination_to_path(self, robot):
-        rospy.logwarn("Creating Path.")
-        robot.destination_node = robot.path.pop()
-        for i in range(len(robot.current_node.directions)):
-            if robot.current_node.directions[i] == None:
-                pass
-            elif robot.current_node.directions[i] == robot.destination_node:
-                robot.orientation_directed = robot.directed_paths[i]
-        robot.previous_orientation = robot.orientation_directed
-    
-    """
-    If there is an unvisited child at current node
-    set path and destination to it.
-    """
-    def set_destination_to_unvisited_child(self, robot):
-        rospy.logwarn("Looking for nearest unvisited Node.")
-        rospy.logwarn("Orientation =" + str(robot.orientation_directed))
-        for i in range(len(robot.directed_paths)):
-            rospy.logwarn("Directed Paths:" + str(robot.directed_paths[i]))
-            if robot.current_node.directions[i] == None:
-                continue
-            elif not robot.current_node.directions[i].is_visited:
-                robot.orientation_directed = robot.directed_paths[i]
-                robot.destination_node = robot.current_node.directions[i]
-        robot.previous_orientation = robot.orientation_directed
 
     """
     Generate a new node based on the current orientation, 
@@ -84,6 +57,11 @@ class BehaviorInIntersection(object):
         right = reorient(front, -90)
         left = reorient(front, 90)
         back = reorient(front, 180)
+        rospy.logwarn("Front: " + str(front))
+        rospy.logwarn("Right: " + str(right))
+        rospy.logwarn("Left: " + str(left))
+        rospy.logwarn("Back: " + str(back))
+
 
         for i in range(len(robot.directed_paths)):
             if robot.directed_paths[i] == front:
@@ -104,28 +82,6 @@ class BehaviorInIntersection(object):
         robot.graph.add_node(new_node)
         robot.current_node = new_node
 
- 
-    """
-    Shift the nodes: current -> previous
-    destination -> current and empty out destination
-    """
-    def update_nodes(self, robot):
-        robot.previous_node = robot.current_node
-        robot.current_node = robot.destination_node
-        robot.destination_node = None
-
-    """
-    Add the connection from the previous to the current
-    and vice versa. Change previous orientation
-    """
-    def update_connections(self, robot):
-        from_direction = reorient(robot.orientation_directed, 180)
-        for i in range(len(robot.directed_paths)):
-            if robot.directed_paths[i] == from_direction:
-                robot.current_node.directions[i] = robot.previous_node
-            if robot.directed_paths[i] == robot.previous_orientation:
-                robot.previous_node.directions[i] = robot.current_node
-
     """
     Depending on the intersection type get the top left or right
     corner and generate all corners within it. 
@@ -141,7 +97,7 @@ class BehaviorInIntersection(object):
         if intersection_type == Intersection.LR:
             orientation = reorient(robot.orientation_directed, 180)
             side = Directions.RIGHT
-            robot.make_realignment_request(turned_around)
+            robot.make_realignment_request(orientation)
         corner = self.calculate_top_corner(robot, side)
         robot.make_realignment_request(robot.orientation_directed)
         corners = generate_corners(corner, side, orientation, robot.node_size)
@@ -187,8 +143,8 @@ class BehaviorInIntersection(object):
                 if diagonal > data[i]:
                     diagonal = data[i]
                     index = i
-            index = index / 4
-            theta = robot.get_actual_orientation_in_degrees() + (90 - index)
+            index = (index - 360) / 4
+            theta = robot.get_actual_orientation_in_degrees() + index
         position = robot.get_coordinates()
         x1 = position[0]
         y1 = position[1]
@@ -198,6 +154,8 @@ class BehaviorInIntersection(object):
 
         x2 = x1 + delta_x
         y2 = y1 + delta_y
+
+        rospy.logwarn("Top Corner is: " + str(x2) + str(y2))
 
         return [x2, y2]
 

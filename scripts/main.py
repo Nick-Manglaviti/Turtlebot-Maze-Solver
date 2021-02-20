@@ -10,13 +10,13 @@ from BehaviorInIntersection import BehaviorInIntersection
 from BehaviorDeadEnd import BehaviorDeadEnd
 from utility import State
 from Turtlebot import Turtlebot
-from turtlebot_maze_escape.srv import AlignmentTarget, AlignmentTargetRequest
+from turtlebot_maze_solver.srv import AlignmentTarget, AlignmentTargetRequest
 
 
 
 if __name__ == "__main__":
     rospy.init_node("turtlebot_controller_node")
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(1)
 
     robot = Turtlebot()
     robot.send_goal_to_scanner_check_action_server()
@@ -33,15 +33,16 @@ if __name__ == "__main__":
     move_to_hallway = BehaviorMoveToHallway()
     in_intersection = BehaviorInIntersection()
     at_dead_end = BehaviorDeadEnd()
+    rate.sleep()
 
     while robot.scanner_check_in_progress():
-        while (robot.state == State.IN_HALLWAY):
-            in_hallway.process(robot)
-        while (robot.state == State.GOING_TO_HALLWAY):
-            move_to_hallway.process(robot)
-        while (robot.state == State.IN_INTERSECTION):
+        if (robot.state == State.IN_INTERSECTION):
             in_intersection.process(robot)
-        while (robot.state == State.AT_DEAD_END):
+        elif (robot.state == State.IN_HALLWAY):
+            in_hallway.process(robot)
+        elif (robot.state == State.GOING_TO_HALLWAY):
+            move_to_hallway.process(robot)
+        elif (robot.state == State.AT_DEAD_END):
             at_dead_end.process(robot)
     
     robot.graph.display()

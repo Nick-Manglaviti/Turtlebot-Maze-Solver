@@ -2,7 +2,7 @@
 
 import rospy
 from utility import get_turn_direction, get_degrees, Services
-from turtlebot_maze_escape.srv import AlignmentTarget, AlignmentTargetResponse
+from turtlebot_maze_solver.srv import AlignmentTarget, AlignmentTargetResponse
 
 from odom_sub import OdomTopicSub
 from cmd_vel_pub import CmdVelPub

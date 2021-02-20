@@ -1,3 +1,3 @@
 <launch>
-    <node pkg='turtlebot_maze_escape' type='scanner_check_action_server.py' name='scanner_check_action_server_node' output='screen' />
+    <node pkg='turtlebot_maze_solver' type='scanner_check_action_server.py' name='scanner_check_action_server_node' output='screen' />
 </launch>

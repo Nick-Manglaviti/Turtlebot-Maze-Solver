@@ -3,6 +3,7 @@
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from enum import Enum
 import math
+import rospy
 
 """
 Enum used for States 
@@ -28,6 +29,7 @@ class Intersection(Enum):
     LR = "Left Right"
     LF = "Left Forward"
     FR = "Forward Right"
+    DE = "Dead End"
 
 
 """
@@ -80,6 +82,7 @@ Returns an array of the 4 points in order:
 top_left, top_right, bottom_left, bottom_right
 """
 def generate_corners(corner, point_side, directed_angle, side_length):
+    rospy.logwarn("Side: " + str(point_side) + " Angle: " + str(directed_angle) + " length: " + str(side_length))
     # Normalized the angles to generate the points
     vertical_angle = directed_angle + 180
     delta_x_vertical = math.cos(math.radians(vertical_angle)) * side_length
@@ -102,13 +105,7 @@ def generate_corners(corner, point_side, directed_angle, side_length):
     bottom_left = [round(bottom_left[0], 4), round(bottom_left[1], 4)]
     bottom_right = [round(bottom_right[0], 4), round(bottom_right[1], 4)]
     
-    corners =  [top_left, top_right, bottom_left, bottom_right]
-    print("Top Left: " + str(corners[0][0]) + ", " + str(corners[0][1]))
-    print("Top Right: " + str(corners[1][0]) + ", " + str(corners[1][1]))
-    print("Bottom Left: " + str(corners[2][0]) + ", " + str(corners[2][1]))
-    print("Bottom Right: " + str(corners[3][0]) + ", " + str(corners[3][1]))
-
-    return corners
+    return [top_left, top_right, bottom_left, bottom_right]
 
 """
 Given the current orientation, add +-degrees 
@@ -136,7 +133,7 @@ def get_direction_mapping(starting_orientation):
     south = reorient(north, 180)
     east = reorient(north, -90)
     west = reorient(north, 90)
-    directed_paths = [north, east, south, west]
+    directed_paths = [north, south, east, west]
     return directed_paths
 
 def is_inf(value):
