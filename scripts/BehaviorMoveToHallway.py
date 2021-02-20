@@ -1,5 +1,7 @@
 #! /usr/bin/env python 
+
 from utility import State
+
 class BehaviorMoveToHallway(object):
 
     def __init__(self):

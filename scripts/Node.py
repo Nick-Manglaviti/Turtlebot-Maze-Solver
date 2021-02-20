@@ -9,7 +9,6 @@ class Node(object):
         self.y_lower = None
         self.y_upper = None
         self.directions = [None, None, None, None]
-        self.is_dead_end = None
         self.is_visited = False
 
     def set_ranges(self, x_lower, x_upper, y_lower, y_upper):
@@ -56,6 +55,6 @@ class Node(object):
         return s
 
     def get_ranges(self):
-        s = "Min X: " + str(self.x_lower ) + "Max X: " + str(self.x_upper )
-        s += "Min Y: " + str(self.y_lower ) + "Max Y: " + str(self.y_upper )
+        s = "Min X: " + str(self.x_lower ) + " Max X: " + str(self.x_upper )
+        s += "Min Y: " + str(self.y_lower ) + " Max Y: " + str(self.y_upper )
         return s

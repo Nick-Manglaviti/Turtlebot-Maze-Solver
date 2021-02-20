@@ -5,7 +5,8 @@ from Node import Node
 from Graph import Graph
 import actionlib
 import time
-from utility import State, Services, Actions, get_degrees, get_turn_direction, get_direction_mapping
+from utility import State, Services, Actions, get_degrees
+from nav_util import get_turn_direction, get_direction_mapping
 from cmd_vel_pub import CmdVelPub
 from odom_sub import OdomTopicSub
 from laser_sub import LaserTopicSub

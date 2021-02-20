@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 
 import rospy
-from utility import get_turn_direction, get_degrees, Services
+from utility import get_degrees, Services
+from nav_util import get_turn_direction
 from turtlebot_maze_solver.srv import AlignmentTarget, AlignmentTargetResponse
 
 from odom_sub import OdomTopicSub

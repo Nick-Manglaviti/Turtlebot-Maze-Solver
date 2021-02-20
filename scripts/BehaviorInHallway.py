@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import rospy
-from utility import State, reorient
+from utility import State
+from nav_util import reorient
 import time
 
 class BehaviorInHallway(object):
