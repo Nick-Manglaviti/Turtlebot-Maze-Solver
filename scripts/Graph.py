@@ -57,17 +57,24 @@ class Graph(object):
             print(str(self.nodes[i].get_ranges()))
 
 if __name__ == "__main__":
-    x = 0.18124729476887277
-    y = -7.395380833559236
-
-    new_node = Node()
-    new_node.set_visited(True)
-    new_node.x_lower = -0.3613
-    new_node.x_upper = 1.2155
-    new_node.y_lower = -8.3999
-    new_node.y_upper = -6.8231
-
     graph = Graph()
-    graph.add_node(new_node)
-    print(graph.search_by_position(x, y))
+    node_zero = Node()
+    node_one = Node()
+    node_two = Node()
+    node_three = Node()
+
+    node_zero.is_visited = True
+    node_one.is_visited = True
+    node_two.is_visited = True
+
+    node_zero.set_directions(node_one, None, None, None)
+    node_one.set_directions(node_two, node_zero, node_two, node_two)
+    node_two.set_directions(node_three, node_one, node_one, node_one)
+
+    graph.add_node(node_zero)
+    graph.add_node(node_one)
+    graph.add_node(node_two)
+
+    path = graph.search_for_unvisited(node_one)
+    
     

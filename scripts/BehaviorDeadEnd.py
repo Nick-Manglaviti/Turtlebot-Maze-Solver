@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 
 from utility import State, Intersection
-from graph_util import update_nodes, update_connections, set_destination_to_path, set_destination_to_unvisited_child
-
+from nav_util import update_nodes, set_destination_to_path, create_and_set_path
+from graph_util import create_node
 
 class BehaviorDeadEnd(object):
 
@@ -11,6 +11,7 @@ class BehaviorDeadEnd(object):
 
     def process(self, robot):
         update_nodes(robot)
-        # create dead node
-        update_connections(robot)
-        set_destination_to_path(robot)
+        create_node(robot)
+        create_and_set_path(robot)
+        robot.graph.display()
+        robot.state = State.IN_HALLWAY
