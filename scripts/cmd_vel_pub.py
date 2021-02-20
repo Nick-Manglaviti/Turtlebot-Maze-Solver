@@ -8,7 +8,7 @@ class CmdVelPub(object):
     def __init__(self):
         self._publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         self._move_msg = Twist()
-        self._linear_speed = 0.4
+        self._linear_speed = 0.45
         self._angular_speed = 0.5
 
     def move_robot(self, direction):
