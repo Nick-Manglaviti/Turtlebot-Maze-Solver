@@ -2,7 +2,7 @@
 
 import rospy
 import actionlib
-from turtlebot_maze_escape.msg import ScannerCheckAction, ScannerCheckFeedback, ScannerCheckResult
+from turtlebot_maze_solver.msg import ScannerCheckAction, ScannerCheckFeedback, ScannerCheckResult
 from laser_sub import LaserTopicSub
 from sensor_msgs.msg import LaserScan
 from utility import Actions
