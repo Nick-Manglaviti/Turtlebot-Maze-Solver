@@ -1,5 +1,7 @@
 <launch>
 
+<param name="/turtlebot_maze_solver/node_size" type="double" value="1.45" />
+
 <node   pkg='turtlebot_maze_solver' 
         type='realignment_service_server.py' 
         name='realignment_service_server' 
