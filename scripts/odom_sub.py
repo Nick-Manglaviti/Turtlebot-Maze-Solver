@@ -8,8 +8,11 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 class OdomTopicSub(object):
 
     def __init__(self):
+        rate = rospy.Rate(1)
         self.odom_sub = rospy.Subscriber('/odom', Odometry, self.__debug_callback)
         self.odom_data = Odometry()
+        while self.odom_sub.get_num_connections() == 0:
+            rate.sleep()
 
     def __debug_callback(self, msg):
         self.odom_data = msg

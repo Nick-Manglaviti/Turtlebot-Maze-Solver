@@ -9,7 +9,7 @@ class BehaviorMoveToHallway(object):
 
     def process(self, robot):
         robot.check_alignment()
-        robot.make_crash_detection_request()
+        robot.crash_detection_client.send_request()
         self.check_if_in_hallway(robot)
         robot.go_forward()
     

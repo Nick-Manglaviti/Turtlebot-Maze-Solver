@@ -116,6 +116,6 @@ def create_and_set_path(robot):
     robot.path = robot.graph.search_for_unvisited(robot.current_node)
     if (len(robot.path) == 0):
         rospy.logerr("No Valid Nodes could be found.")
-        robot.cancel_scanner_check_action()
+        robot.scanner_check_client.cancel()
     else:
         set_destination_to_path(robot)

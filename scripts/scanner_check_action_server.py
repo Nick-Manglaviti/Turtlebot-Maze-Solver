@@ -28,10 +28,9 @@ class ScannerCheckClass(object):
             
             # Build next feedback msg to be sent
             if not self.check_if_out_maze(self._laser_reader_object.get_laser_data().ranges):
-                rospy.loginfo("Goal not reached because of " + str(self._feedback))
                 self._as.publish_feedback(self._feedback)
             else:
-                rospy.logwarn('Reached distance Goal.')
+                rospy.logwarn('Reached Goal.')
                 break
             rate.sleep()
         
@@ -47,11 +46,9 @@ class ScannerCheckClass(object):
             flag = False 
         for i in range(len(laser_scan_array)):
             if str(laser_scan_array[i]) != "inf":
-                rospy.loginfo("Index: "+ str(i) + ", Value: " + str(laser_scan_array[i]))
                 self._feedback.value = i
                 flag = False
                 break
-        rospy.loginfo("Out of Maze: "+str(flag))
         return flag
 
     def clean_variables(self):

@@ -27,14 +27,12 @@ class RealignmentService(object):
             current = get_degrees(self._odom_reader.get_odom())
             result = get_turn_direction(current, request.target)
             if result == 0:
-                rospy.logdebug("Turning Done.")
+                rospy.loginfo("Turning Done.")
                 flag = False
             elif result > 0:
                 self._cmd_pub_obj.move_robot(self._right)
-                rospy.logdebug("Turning ==> " + self._right)
             elif result < 0:
                 self._cmd_pub_obj.move_robot(self._left)
-                rospy.logdebug("Turning ==> " + self._left)
         self._cmd_pub_obj.move_robot(self._stop)
         response.success = True
 
