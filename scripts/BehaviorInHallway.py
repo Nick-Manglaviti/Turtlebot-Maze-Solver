@@ -12,7 +12,7 @@ class BehaviorInHallway(object):
     def process(self, robot):
         robot.go_forward()
         robot.check_alignment()
-        robot.make_crash_detection_request()
+        robot.crash_detection_client.send_request()
         self.check_lfr(robot)
     
     def check_lfr(self, robot):

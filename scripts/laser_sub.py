@@ -7,11 +7,14 @@ import time
 class LaserTopicSub(object):
 
     def __init__(self):
+        rate = rospy.Rate(1)
         self._subscriber = rospy.Subscriber('/kobuki/laser/scan', LaserScan, self.__debug_callback)
         self._laser_data = LaserScan()
         self._front = 0.0
         self._left = 0.0
         self._right = 0.0
+        while self._subscriber.get_num_connections() == 0:
+            rate.sleep()
 
     def __debug_callback(self, msg):
         self._laser_data = msg

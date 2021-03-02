@@ -6,10 +6,13 @@ from geometry_msgs.msg import Twist
 class CmdVelPub(object):
 
     def __init__(self):
+        rate = rospy.Rate(1)
         self._publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         self._move_msg = Twist()
         self._linear_speed = 0.45
         self._angular_speed = 0.5
+        while self._publisher.get_num_connections() == 0:
+            rate.sleep()
 
     def move_robot(self, direction):
         if direction == 'forward':

@@ -38,6 +38,7 @@ class CrashDetectionService(object):
                 index = 719
             if self._laser_reader.get_laser_data().ranges[index] < self.crash_distance:
                 self._cmd_pub.move_robot("stop")
+                self._rate.sleep()
                 rospy.logwarn('Crash incoming at index: ' + str(index) + ' Value: ' + str(self._laser_reader.get_laser_data().ranges[index]))
                 stopped = True
                 right_side = laser_scan_size // 4

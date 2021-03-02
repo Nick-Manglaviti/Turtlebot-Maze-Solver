@@ -53,9 +53,9 @@ def set_xy_ranges(robot, intersection_type, node):
     orientation = robot.orientation_directed
     if intersection_type == Intersection.LR:
         orientation = reorient(robot.orientation_directed, 180)
-        robot.make_realignment_request(orientation)
+        robot.realignment_client.send_request(orientation)
     corner = calculate_top_corner(robot, intersection_type)
-    robot.make_realignment_request(robot.orientation_directed)
+    robot.realignment_client.send_request(robot.orientation_directed)
     corners = generate_corners(corner, side, orientation, robot.node_size)
         
     node.x_lower = corners[0][0]
