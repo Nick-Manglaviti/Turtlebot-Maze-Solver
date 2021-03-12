@@ -15,6 +15,11 @@ class BehaviorInHallway(object):
         robot.crash_detection_client.send_request()
         self.check_lfr(robot)
     
+    '''
+    Checks the distances of left, right to see if
+    any of those open up and if the front position
+    closes.
+    '''
     def check_lfr(self, robot):
         if robot.left_open() or robot.right_open() or robot.approching_wall():
             robot.go_forward()

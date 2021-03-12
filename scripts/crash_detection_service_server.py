@@ -27,6 +27,11 @@ class CrashDetectionService(object):
         self._rate = rospy.Rate(1)
         self.crash_distance = .45
 
+    '''
+    Checks indexes of distances in the laserscanner by increments of 10
+    if any are less than the crash distance, turn and move,
+    then return to original alignment.
+    '''
     def srv_callback(self, request):
         laser_scan_size = len(self._laser_reader.get_laser_data().ranges)
         batch = laser_scan_size // 10

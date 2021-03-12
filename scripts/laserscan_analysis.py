@@ -8,6 +8,10 @@ class LaserScanAnalysis(object):
     def __init__(self):
         pass
 
+'''
+Constantly checks for all values to see
+if there are all "inf" then robot is out of maze
+'''
 def check_if_out_maze(laser_scan_result_array):
     laser_scan_analysis_object = LaserScanAnalysis()
     flag = True

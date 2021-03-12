@@ -38,7 +38,7 @@ def set_destination_to_path(robot):
 
 """
 If there is an unvisited child at current node
-set path and destination to it.
+set destination to it.
 """
 def set_destination_to_unvisited_child(robot):
     update_connections(robot)
@@ -46,7 +46,7 @@ def set_destination_to_unvisited_child(robot):
         if robot.current_node.directions[i] == None:
             continue
         elif not robot.current_node.directions[i].is_visited:
-            rospy.logwarn("Set Path: " + str(robot.directed_paths[i]))
+            rospy.logwarn("Set Destination: " + str(robot.directed_paths[i]))
             robot.orientation_directed = robot.directed_paths[i]
             robot.destination_node = robot.current_node.directions[i]
             break

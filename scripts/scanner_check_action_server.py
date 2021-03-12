@@ -26,7 +26,6 @@ class ScannerCheckClass(object):
                 success = False
                 break
             
-            # Build next feedback msg to be sent
             if not self.check_if_out_maze(self._laser_reader_object.get_laser_data().ranges):
                 self._as.publish_feedback(self._feedback)
             else:

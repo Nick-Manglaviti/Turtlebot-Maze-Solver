@@ -135,7 +135,7 @@ top_left, top_right, bottom_left, bottom_right
 """
 def generate_corners(corner, point_side, directed_angle, side_length):
     rospy.logwarn("Side: " + str(point_side) + " Angle: " + str(directed_angle) + " length: " + str(side_length))
-    # Normalized the angles to generate the points
+    # Calculated differences for x and y
     vertical_angle = directed_angle + 180
     delta_x_vertical = math.cos(math.radians(vertical_angle)) * side_length
     delta_y_vertical = math.sin(math.radians(vertical_angle)) * side_length
